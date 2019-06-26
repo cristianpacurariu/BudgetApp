@@ -5,16 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Budget.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="300">
+             d:DesignHeight="50" d:DesignWidth="200">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Label Name="lblName" Content=""></Label>
-        <Button Grid.Column="1" Margin="5" Name="btnEditItem">Edit</Button>
-        <Button Grid.Column="2" Margin="5" Name="btnDeleteItem">Delete</Button>
+        <Button Grid.Column="1"  Name="btnEditItem" Width="40" Height="20">Edit</Button>
+        <Button Grid.Column="2"  Name="btnDeleteItem" Width="40" Height="20">Delete</Button>
 
     </Grid>
 </UserControl>

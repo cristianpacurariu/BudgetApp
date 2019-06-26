@@ -33,7 +33,8 @@ namespace Budget.Wpf
         {
             AccountDto account = new AccountDto();
             account.Name = tbName.Text;
-            account.Currency = tbCurrency.Text;
+
+            account.Currency = tbCurrency.Text.ToUpper();
 
 
             if (Id == null)

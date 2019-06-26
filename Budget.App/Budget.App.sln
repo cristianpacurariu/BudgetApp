@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Infrastructure", "Bu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Repositories", "Budget.Repositories\Budget.Repositories.csproj", "{D98C1497-DC82-4ADE-8210-7FDA218356AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Wpf", "Budget.Wpf\Budget.Wpf.csproj", "{08CC5ACB-A325-4A99-87F5-BF57772273D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D98C1497-DC82-4ADE-8210-7FDA218356AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D98C1497-DC82-4ADE-8210-7FDA218356AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D98C1497-DC82-4ADE-8210-7FDA218356AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08CC5ACB-A325-4A99-87F5-BF57772273D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08CC5ACB-A325-4A99-87F5-BF57772273D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08CC5ACB-A325-4A99-87F5-BF57772273D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08CC5ACB-A325-4A99-87F5-BF57772273D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

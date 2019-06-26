@@ -31,33 +31,8 @@ namespace Budget.Forms
         private void Form1_Load(object sender, EventArgs e)
         {
             AccountDto account =  _accountRepo.Get(1);
-            nameTBox.Text = account.Name;
-            currencyTBox.Text = account.Currency;
+            
         }
 
-        private void AddBtn_Click(object sender, EventArgs e)
-        {
-            UpdateAccount();
-        }
-
-        private void UpdateAccount()
-        {
-            AccountDto toUpdate = new AccountDto();
-            toUpdate.Name = nameTBox.Text;
-            toUpdate.Currency = currencyTBox.Text;
-            toUpdate.Id = 1;
-
-            _accountRepo.Update(toUpdate);
-        }
-
-        private void AddAccount()
-        {
-            AccountDto toadd = new AccountDto();
-            toadd.Name = nameTBox.Text;
-            toadd.Currency = currencyTBox.Text;
-
-            int idAccount = _accountRepo.Add(toadd);
-            MessageBox.Show($"Added account with id {idAccount}");
-        }
     }
 }

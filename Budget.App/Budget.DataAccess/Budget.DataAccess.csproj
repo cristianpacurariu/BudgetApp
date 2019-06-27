@@ -53,6 +53,9 @@
     <Compile Include="Model\Account.cs">
       <DependentUpon>SpendingsModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\Currency.cs">
+      <DependentUpon>SpendingsModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\Operation.cs">
       <DependentUpon>SpendingsModel.tt</DependentUpon>
     </Compile>
@@ -100,9 +103,11 @@
       <DependentUpon>SpendingsModel.edmx</DependentUpon>
       <LastGenOutput>SpendingsModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\Script 001.sql" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

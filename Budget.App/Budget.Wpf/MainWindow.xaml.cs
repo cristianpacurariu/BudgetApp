@@ -2,6 +2,7 @@
 using Budget.Domain.Repositories;
 using Budget.Infrastructure.Repositories.Specific;
 using Budget.Repositories.Utils;
+using Budget.Wpf.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace Budget.Wpf
             {
                 EditableItemControl item = new EditableItemControl();
 
-                item.lblName.Content = account.Name + " " + account.Currency;
+                item.lblName.Content = account.Name + " " + account.Currency.Name;
                 item.Id = account.Id;
                 item.btnEditItem.Click += BtnEditAccount_Click;
                 item.btnDeleteItem.Click += BtnDeleteAccount_Click;
@@ -206,7 +207,15 @@ namespace Budget.Wpf
             AccountWindow accountWindow = new AccountWindow();
             accountWindow.Id = accountDto.Id;
             accountWindow.tbName.Text = accountDto.Name;
-            accountWindow.tbCurrency.Text = accountDto.Currency;
+
+            foreach (var item in accountWindow.cbCurrency.Items)
+            {
+                if (((ComboItem)item).Id == accountDto.IdCurrency)
+                {
+                    accountWindow.cbCurrency.SelectedItem = item;
+                    break;
+                }
+            }
 
             accountWindow.Show();
             accountWindow.Closing += AccountWindow_Closing;

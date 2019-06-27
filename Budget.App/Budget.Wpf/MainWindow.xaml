@@ -35,7 +35,7 @@
             <Button Grid.Column="0" Grid.Row="3" Name="btnCreateCategory" Content="Create Category" Margin="5" FontSize="24" 
                     Click="BtnCreateCategory_Click" FontFamily="Century Gothic"></Button>
         </Grid>
-            <Button Name="btnNewSpending" Content="New Spending" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Center" 
+        <Button Name="btnNewSpending" Content="New Spending" Grid.Column="1" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Margin="5"
                     Width="200" FontFamily="Century Gothic" FontSize="24" Click="BtnNewSpending_Click"/>
     </Grid>
 </Window>

@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountRepo.cs" />
+    <Compile Include="CurrencyRepo.cs" />
     <Compile Include="OperationRepo.cs" />
     <Compile Include="OperationTypeRepo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

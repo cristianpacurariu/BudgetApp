@@ -5,11 +5,13 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="35c7d512fa47444480bd9792eb8986a9" Name="Diagram1">
-        <EntityTypeShape EntityType="SpendingsModel.Account" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="SpendingsModel.Operation" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="SpendingsModel.OperationType" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
-        <AssociationConnector Association="SpendingsModel.FK_Operations_Accounts" ManuallyRouted="false" />
-        <AssociationConnector Association="SpendingsModel.FK_Operations_OperationTypes" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SpendingsModel.Account" Width="1.5" PointX="3" PointY="1.25" />
+        <EntityTypeShape EntityType="SpendingsModel.Currency" Width="1.5" PointX="0.75" PointY="1.375" />
+        <EntityTypeShape EntityType="SpendingsModel.Operation" Width="1.5" PointX="5.25" PointY="1" />
+        <EntityTypeShape EntityType="SpendingsModel.OperationType" Width="1.5" PointX="8.625" PointY="1.75" />
+        <AssociationConnector Association="SpendingsModel.FK_Accounts_Currencies" />
+        <AssociationConnector Association="SpendingsModel.FK_Operations_Accounts" />
+        <AssociationConnector Association="SpendingsModel.FK_Operations_OperationTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

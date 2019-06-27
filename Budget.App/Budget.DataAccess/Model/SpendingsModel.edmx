@@ -4,14 +4,21 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SpendingsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="SpendingsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdCurrency" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="15" Nullable="false" />
-          <Property Name="Currency" Type="nvarchar" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Currencies">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="Operations">
           <Key>
@@ -33,6 +40,18 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="IsCredit" Type="bit" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Accounts_Currencies">
+          <End Role="Currencies" Type="Self.Currencies" Multiplicity="1" />
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Currencies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Accounts">
+              <PropertyRef Name="IdCurrency" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Operations_Accounts">
           <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
           <End Role="Operations" Type="Self.Operations" Multiplicity="*" />
@@ -59,8 +78,13 @@
         </Association>
         <EntityContainer Name="SpendingsModelStoreContainer">
           <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Currencies" EntityType="Self.Currencies" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Operations" EntityType="Self.Operations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationTypes" EntityType="Self.OperationTypes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Accounts_Currencies" Association="Self.FK_Accounts_Currencies">
+            <End Role="Currencies" EntitySet="Currencies" />
+            <End Role="Accounts" EntitySet="Accounts" />
+          </AssociationSet>
           <AssociationSet Name="FK_Operations_Accounts" Association="Self.FK_Operations_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
             <End Role="Operations" EntitySet="Operations" />
@@ -70,19 +94,45 @@
             <End Role="Operations" EntitySet="Operations" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SpendingsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SpendingsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="SpendingsModel.Account" />
+          <EntitySet Name="Currencies" EntityType="SpendingsModel.Currency" />
+          <EntitySet Name="Operations" EntityType="SpendingsModel.Operation" />
+          <EntitySet Name="OperationTypes" EntityType="SpendingsModel.OperationType" />
+          <AssociationSet Name="FK_Accounts_Currencies" Association="SpendingsModel.FK_Accounts_Currencies">
+            <End Role="Currency" EntitySet="Currencies" />
+            <End Role="Account" EntitySet="Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operations_Accounts" Association="SpendingsModel.FK_Operations_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Operation" EntitySet="Operations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operations_OperationTypes" Association="SpendingsModel.FK_Operations_OperationTypes">
+            <End Role="OperationType" EntitySet="OperationTypes" />
+            <End Role="Operation" EntitySet="Operations" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Currency" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Operations" Relationship="Self.FK_Operations_Accounts" FromRole="Accounts" ToRole="Operations" />
+          <Property Name="IdCurrency" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Currency" Relationship="SpendingsModel.FK_Accounts_Currencies" FromRole="Account" ToRole="Currency" />
+          <NavigationProperty Name="Operations" Relationship="SpendingsModel.FK_Operations_Accounts" FromRole="Account" ToRole="Operation" />
+        </EntityType>
+        <EntityType Name="Currency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Accounts" Relationship="SpendingsModel.FK_Accounts_Currencies" FromRole="Currency" ToRole="Account" />
         </EntityType>
         <EntityType Name="Operation">
           <Key>
@@ -91,59 +141,58 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdAccount" Type="Int32" Nullable="false" />
           <Property Name="IdOperationType" Type="Int32" Nullable="false" />
-          <Property Name="Ammount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Ammount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Operations_Accounts" FromRole="Operations" ToRole="Accounts" />
-          <NavigationProperty Name="OperationType" Relationship="Self.FK_Operations_OperationTypes" FromRole="Operations" ToRole="OperationTypes" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Account" Relationship="SpendingsModel.FK_Operations_Accounts" FromRole="Operation" ToRole="Account" />
+          <NavigationProperty Name="OperationType" Relationship="SpendingsModel.FK_Operations_OperationTypes" FromRole="Operation" ToRole="OperationType" />
         </EntityType>
         <EntityType Name="OperationType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsCredit" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Operations" Relationship="Self.FK_Operations_OperationTypes" FromRole="OperationTypes" ToRole="Operations" />
+          <NavigationProperty Name="Operations" Relationship="SpendingsModel.FK_Operations_OperationTypes" FromRole="OperationType" ToRole="Operation" />
         </EntityType>
-        <Association Name="FK_Operations_Accounts">
-          <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
-          <End Role="Operations" Type="Self.Operation" Multiplicity="*" />
+        <Association Name="FK_Accounts_Currencies">
+          <End Type="SpendingsModel.Currency" Role="Currency" Multiplicity="1" />
+          <End Type="SpendingsModel.Account" Role="Account" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Accounts">
+            <Principal Role="Currency">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Operations">
+            <Dependent Role="Account">
+              <PropertyRef Name="IdCurrency" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operations_Accounts">
+          <End Type="SpendingsModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="SpendingsModel.Operation" Role="Operation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Operation">
               <PropertyRef Name="IdAccount" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Operations_OperationTypes">
-          <End Role="OperationTypes" Type="Self.OperationType" Multiplicity="1" />
-          <End Role="Operations" Type="Self.Operation" Multiplicity="*" />
+          <End Type="SpendingsModel.OperationType" Role="OperationType" Multiplicity="1" />
+          <End Type="SpendingsModel.Operation" Role="Operation" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OperationTypes">
+            <Principal Role="OperationType">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Operations">
+            <Dependent Role="Operation">
               <PropertyRef Name="IdOperationType" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SpendingsEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Accounts" EntityType="Self.Account" />
-          <EntitySet Name="Operations" EntityType="Self.Operation" />
-          <EntitySet Name="OperationTypes" EntityType="Self.OperationType" />
-          <AssociationSet Name="FK_Operations_Accounts" Association="Self.FK_Operations_Accounts">
-            <End Role="Accounts" EntitySet="Accounts" />
-            <End Role="Operations" EntitySet="Operations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Operations_OperationTypes" Association="Self.FK_Operations_OperationTypes">
-            <End Role="OperationTypes" EntitySet="OperationTypes" />
-            <End Role="Operations" EntitySet="Operations" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -153,31 +202,39 @@
           <EntitySetMapping Name="Accounts">
             <EntityTypeMapping TypeName="SpendingsModel.Account">
               <MappingFragment StoreEntitySet="Accounts">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="IdCurrency" ColumnName="IdCurrency" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Currencies">
+            <EntityTypeMapping TypeName="SpendingsModel.Currency">
+              <MappingFragment StoreEntitySet="Currencies">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Operations">
             <EntityTypeMapping TypeName="SpendingsModel.Operation">
               <MappingFragment StoreEntitySet="Operations">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdAccount" ColumnName="IdAccount" />
-                <ScalarProperty Name="IdOperationType" ColumnName="IdOperationType" />
-                <ScalarProperty Name="Ammount" ColumnName="Ammount" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Ammount" ColumnName="Ammount" />
+                <ScalarProperty Name="IdOperationType" ColumnName="IdOperationType" />
+                <ScalarProperty Name="IdAccount" ColumnName="IdAccount" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OperationTypes">
             <EntityTypeMapping TypeName="SpendingsModel.OperationType">
               <MappingFragment StoreEntitySet="OperationTypes">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="IsCredit" ColumnName="IsCredit" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

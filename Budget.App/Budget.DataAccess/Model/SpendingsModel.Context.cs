@@ -26,6 +26,7 @@ namespace Budget.DataAccess.Model
         }
     
         public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<Currency> Currencies { get; set; }
         public virtual DbSet<Operation> Operations { get; set; }
         public virtual DbSet<OperationType> OperationTypes { get; set; }
     }

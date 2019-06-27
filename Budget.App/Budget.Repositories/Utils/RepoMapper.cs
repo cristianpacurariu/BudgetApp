@@ -16,6 +16,7 @@ namespace Budget.Repositories.Utils
             this.CreateMap<AccountDto, Account>().ReverseMap();
             this.CreateMap<OperationDto, Operation>().ReverseMap();
             this.CreateMap<OperationTypeDto, OperationType>().ReverseMap();
+            this.CreateMap<Currency, CurrencyDto>().ReverseMap();
         }
 
     }

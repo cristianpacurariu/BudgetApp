@@ -12,20 +12,18 @@ namespace Budget.DataAccess.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Account
+    public partial class Currency
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Account()
+        public Currency()
         {
-            this.Operations = new HashSet<Operation>();
+            this.Accounts = new HashSet<Account>();
         }
     
         public int Id { get; set; }
-        public int IdCurrency { get; set; }
         public string Name { get; set; }
     
-        public virtual Currency Currency { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Operation> Operations { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace Budget.Wpf
             {
                 ComboItem comboItem = new ComboItem()
                 {
-                    Name = $"{accountDto.Name} {accountDto.Currency}",
+                    Name = $"{accountDto.Name} {accountDto.Currency.Name}",
                     Id = accountDto.Id
                 };
                 cbAccount.Items.Add(comboItem);

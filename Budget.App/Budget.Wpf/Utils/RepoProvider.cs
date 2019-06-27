@@ -25,5 +25,10 @@ namespace Budget.Wpf
         {
             return new OperationRepo();
         }
+
+        internal static ICurrencyRepo<CurrencyDto> GetCurrencyRepo()
+        {
+            return new CurrencyRepo();
+        }
     }
 }

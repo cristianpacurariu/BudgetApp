@@ -47,6 +47,7 @@
     <Compile Include="Repositories\Generic\IDeleteRepo.cs" />
     <Compile Include="Repositories\Generic\IUpdateRepo.cs" />
     <Compile Include="Repositories\Generic\IGetRepo.cs" />
+    <Compile Include="Repositories\Specific\ICurrencyRepo.cs" />
     <Compile Include="Repositories\Specific\IOperationRepo.cs" />
     <Compile Include="Repositories\Specific\IOperationTypeRepo.cs" />
     <Compile Include="Repositories\Specific\IAccountRepo.cs" />

@@ -9,23 +9,33 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="37*" />
+            <ColumnDefinition Width="37*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="50"/>
-            <RowDefinition />
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <ScrollViewer Grid.Column="0" Grid.Row="0">
-            <StackPanel Name="spAccounts" Orientation="Vertical">
-            </StackPanel>
-        </ScrollViewer>
-        <Button Grid.Column="0" Grid.Row="1" Name="btnCreateAccount" Content="Create Account" Margin="5" FontSize="16" Click="BtnCreateAccount_Click"></Button>
-        <ScrollViewer Grid.Column="0" Grid.Row="2">
-            <StackPanel  Name="spCategories" Orientation="Vertical">
-            </StackPanel>
-        </ScrollViewer>
-        <Button Grid.Column="0" Grid.Row="3" Name="btnCreateCategory" Content="Create Category" Margin="5" FontSize="16" Click="BtnCreateCategory_Click"></Button>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="50"/>
+                <RowDefinition />
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            
+            <ScrollViewer Grid.Column="0" Grid.Row="0">
+                <StackPanel Name="spAccounts" Orientation="Vertical">
+                </StackPanel>
+            </ScrollViewer>
+            
+            <Button Grid.Column="0" Grid.Row="1" Name="btnCreateAccount" Content="Create Account" Margin="5" FontSize="24" 
+                    Click="BtnCreateAccount_Click" FontFamily="Century Gothic"></Button>
+            
+            <ScrollViewer Grid.Column="0" Grid.Row="2">
+                <StackPanel  Name="spCategories" Orientation="Vertical">
+                </StackPanel>
+            </ScrollViewer>
+            
+            <Button Grid.Column="0" Grid.Row="3" Name="btnCreateCategory" Content="Create Category" Margin="5" FontSize="24" 
+                    Click="BtnCreateCategory_Click" FontFamily="Century Gothic"></Button>
+        </Grid>
+            <Button Name="btnNewSpending" Content="New Spending" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Center" 
+                    Width="200" FontFamily="Century Gothic" FontSize="24" Click="BtnNewSpending_Click"/>
     </Grid>
 </Window>

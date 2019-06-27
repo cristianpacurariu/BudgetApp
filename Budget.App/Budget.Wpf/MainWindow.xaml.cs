@@ -31,6 +31,7 @@ namespace Budget.Wpf
         {
             Mapper.Initialize(conf => conf.AddProfile<RepoMapper>());
             InitializeComponent();
+
         }
 
         private void BtnCreateAccount_Click(object sender, RoutedEventArgs e)
@@ -224,6 +225,13 @@ namespace Budget.Wpf
             }
 
             InitializeAccounts();
+        }
+
+        private void BtnNewSpending_Click(object sender, RoutedEventArgs e)
+        {
+            NewSpendingWindow newSpendingWindow = new NewSpendingWindow();
+            newSpendingWindow.Show();
+
         }
     }
 }

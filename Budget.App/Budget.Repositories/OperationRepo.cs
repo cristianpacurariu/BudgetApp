@@ -8,10 +8,11 @@ using Budget.Domain.Repositories;
 using Budget.DataAccess.Model;
 using AutoMapper;
 using System.Data.Entity;
+using Budget.Domain.Filters;
 
 namespace Budget.Repositories
 {
-    public class OperationRepo : IOperationRepo<OperationDto>
+    public class OperationRepo : IOperationRepo<OperationDto, OperationDtoFilter>
     {
         public int Add(OperationDto item)
         {
@@ -50,15 +51,6 @@ namespace Budget.Repositories
                 return true;
             }
         }
-        public List<OperationDto> FilterByAccount(int idAccount)
-        {
-            using (SpendingsEntities context = new SpendingsEntities())
-            {
-                List<Operation> fromDb = context.Operations.Where(d => d.IdAccount == idAccount).ToList();
-
-                return Mapper.Map<List<Operation>, List<OperationDto>>(fromDb);
-            }
-        }
         public OperationDto Get(int id)
         {
             using (SpendingsEntities context = new SpendingsEntities())
@@ -85,6 +77,43 @@ namespace Budget.Repositories
 
                 context.SaveChanges();
             }
+        }
+        public List<OperationDto> Filter(OperationDtoFilter filter)
+        {
+            using (SpendingsEntities context = new SpendingsEntities())
+            {
+                IQueryable<Operation> query = context.Operations;
+
+                if (filter.IdAccount != null)
+                {
+                    query = query.Where(d => d.IdAccount == filter.IdAccount.Value);
+                }
+
+                if (filter.IdCategory != null)
+                {
+                    query = query.Where(d => d.IdOperationType == filter.IdCategory.Value);
+                }
+
+                if (filter.IdCurrency != null)
+                {
+                    query = query.Where(d => d.Account.IdCurrency == filter.IdCurrency);
+                }
+
+                if (filter.AmmountFrom != null)
+                {
+                    query = query.Where(d => d.Ammount >= filter.AmmountFrom);
+                }
+
+                if (filter.AmmountTo != null)
+                {
+                    query = query.Where(d => d.Ammount <= filter.AmmountTo);
+                }
+
+                List<Operation> fromDb = query.ToList();
+
+                return Mapper.Map<List<Operation>, List<OperationDto>>(fromDb);
+            }
+
         }
     }
 }

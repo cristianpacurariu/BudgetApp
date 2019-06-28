@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\AccountDtoFilter.cs" />
+    <Compile Include="Filters\OperationDtoFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountDto.cs" />
     <Compile Include="Repositories\CurrencyDto.cs" />

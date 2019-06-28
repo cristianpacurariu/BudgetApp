@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Budget.Domain.Filters;
 using Budget.Domain.Repositories;
 using Budget.Infrastructure.Repositories.Specific;
 using Budget.Repositories;
@@ -11,7 +12,7 @@ namespace Budget.Wpf
 {
     public static class RepoProvider
     {
-        internal static IAccountRepo<AccountDto> GetAccountRepo()
+        internal static IAccountRepo<AccountDto, AccountDtoFilter> GetAccountRepo()
         {
             return new AccountRepo();
         }
@@ -21,7 +22,7 @@ namespace Budget.Wpf
             return new OperationTypeRepo();
         }
 
-        internal static IOperationRepo<OperationDto> GetOperationRepo()
+        internal static IOperationRepo<OperationDto, OperationDtoFilter> GetOperationRepo()
         {
             return new OperationRepo();
         }

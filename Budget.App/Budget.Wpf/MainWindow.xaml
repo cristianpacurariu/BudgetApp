@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="1000" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="37*"/>
         </Grid.ColumnDefinitions>
         <Grid>
@@ -37,5 +37,8 @@
         </Grid>
         <Button Name="btnNewSpending" Content="New Spending" Grid.Column="1" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Margin="5"
                     Width="200" FontFamily="Century Gothic" FontSize="24" Click="BtnNewSpending_Click"/>
+        <Button Name="btnViewSpendings" Content="Spendings List" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Width="200" FontFamily="Century Gothic" FontSize="24" Click="BtnViewSpendings_Click"></Button>
+            
     </Grid>
 </Window>

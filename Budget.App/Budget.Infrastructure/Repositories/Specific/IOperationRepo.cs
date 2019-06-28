@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Budget.Infrastructure.Repositories.Specific
 {
-    public interface IOperationRepo<T> : IGetRepo<T>, IListRepo<T>, IAddRepo<T>, IDeleteRepo<T>, IUpdateRepo<T>
+    public interface IOperationRepo<T, F> : IGetRepo<T>, IListRepo<T>, IAddRepo<T>, IDeleteRepo<T>, IUpdateRepo<T>, IFilterRepo<T, F>
     {
-        List<T> FilterByAccount(int idAccount);
+
     }
 }

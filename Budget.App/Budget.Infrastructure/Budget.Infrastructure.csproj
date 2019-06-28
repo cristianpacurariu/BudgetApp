@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Generic\IFilterRepo.cs" />
     <Compile Include="Repositories\Generic\IListRepo.cs" />
     <Compile Include="Repositories\Generic\IAddRepo.cs" />
     <Compile Include="Repositories\Generic\IDeleteRepo.cs" />

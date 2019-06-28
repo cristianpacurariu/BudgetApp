@@ -71,8 +71,14 @@
     <Compile Include="CategoryWindow.xaml.cs">
       <DependentUpon>CategoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditableTransactionControl.xaml.cs">
+      <DependentUpon>EditableTransactionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NewSpendingWindow.xaml.cs">
       <DependentUpon>NewSpendingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionListWindow.xaml.cs">
+      <DependentUpon>TransactionListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ComboItem.cs" />
     <Compile Include="Utils\RepoProvider.cs" />
@@ -85,6 +91,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AccountWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditableTransactionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -104,6 +114,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NewSpendingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TransactionListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

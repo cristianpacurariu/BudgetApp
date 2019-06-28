@@ -8,10 +8,11 @@ using Budget.Infrastructure.Repositories.Specific;
 using Budget.Domain.Repositories;
 using AutoMapper;
 using System.Data.Entity;
+using Budget.Domain.Filters;
 
 namespace Budget.Repositories
 {
-    public class AccountRepo : IAccountRepo<AccountDto>
+    public class AccountRepo : IAccountRepo<AccountDto, AccountDtoFilter>
     {
         public int Add(AccountDto item)
         {
@@ -29,7 +30,6 @@ namespace Budget.Repositories
                 return toAdd.Id;
             }
         }
-
         public List<AccountDto> All()
         {
             using (SpendingsEntities context = new SpendingsEntities())
@@ -52,7 +52,6 @@ namespace Budget.Repositories
                 //return result;
             }
         }
-
         public bool Delete(int id)
         {
             using (SpendingsEntities context = new SpendingsEntities())
@@ -70,7 +69,6 @@ namespace Budget.Repositories
                 return true;
             }
         }
-
         public AccountDto Get(int id)
         {
             using (SpendingsEntities context = new SpendingsEntities())
@@ -91,7 +89,6 @@ namespace Budget.Repositories
                 //return result;
             }
         }
-
         public void Update(AccountDto item)
         {
             //map to Account
@@ -108,29 +105,28 @@ namespace Budget.Repositories
                 //mark certain properties as modified
                 //context.Entry(account).Property(d => d.Currency).IsModified = true;
                 //context.Entry(account).Property(d => d.Name).IsModified = true;
-                
+
                 //save modifications
                 context.SaveChanges();
 
             }
         }
+        public List<AccountDto> Filter(AccountDtoFilter filter)
+        {
+            using (SpendingsEntities context = new SpendingsEntities())
+            {
+                IQueryable<Account> query = context.Accounts;
 
-        //public void Update(AccountDto item)
-        //{
-        //    using (SpendingsEntities context = new SpendingsEntities())
-        //    {
-        //        Account fromDb = context.Accounts.FirstOrDefault(d => d.Id == item.Id);
+                if (filter.IdCurrency != null)
+                {
+                    query = query.Where(d => d.IdCurrency == filter.IdCurrency);
+                }
 
-        //        if (fromDb == null)
-        //        {
-        //            return;
-        //        }
+                List<Account> accounts = query.ToList();
 
-        //        fromDb.Name = item.Name;
-        //        fromDb.Currency = item.Currency;
+                return Mapper.Map<List<Account>, List<AccountDto>>(accounts);
+            }
+        }
 
-        //        context.SaveChanges();
-        //    }
-        //}
     }
 }

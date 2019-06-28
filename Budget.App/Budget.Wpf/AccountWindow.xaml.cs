@@ -1,4 +1,5 @@
-﻿using Budget.Domain.Repositories;
+﻿using Budget.Domain.Filters;
+using Budget.Domain.Repositories;
 using Budget.Infrastructure.Repositories.Specific;
 using Budget.Wpf.Utils;
 using System;
@@ -22,7 +23,7 @@ namespace Budget.Wpf
     /// </summary>
     public partial class AccountWindow : Window
     {
-        private readonly IAccountRepo<AccountDto> _accountRepo = RepoProvider.GetAccountRepo();
+        private readonly IAccountRepo<AccountDto, AccountDtoFilter> _accountRepo = RepoProvider.GetAccountRepo();
         private readonly ICurrencyRepo<CurrencyDto> _currencyRepo = RepoProvider.GetCurrencyRepo();
         public AccountWindow()
         {

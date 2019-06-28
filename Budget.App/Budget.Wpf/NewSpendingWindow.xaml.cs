@@ -14,14 +14,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Budget.Wpf.Utils;
+using Budget.Domain.Filters;
 
 namespace Budget.Wpf
 {
     public partial class NewSpendingWindow : Window
     {
-        private readonly IAccountRepo<AccountDto> _accountRepo = RepoProvider.GetAccountRepo();
+        private readonly IAccountRepo<AccountDto, AccountDtoFilter> _accountRepo = RepoProvider.GetAccountRepo();
         private readonly IOperationTypeRepo<OperationTypeDto> _operationTypeRepo = RepoProvider.GetOperationTypeRepo();
-        private readonly IOperationRepo<OperationDto> _operationRepo = RepoProvider.GetOperationRepo();
+        private readonly IOperationRepo<OperationDto, OperationDtoFilter> _operationRepo = RepoProvider.GetOperationRepo();
         public NewSpendingWindow()
         {
             InitializeComponent();
@@ -77,6 +78,7 @@ namespace Budget.Wpf
 
             _operationRepo.Add(newOperationDto);
             this.Close();
+            MessageBox.Show("Operation added succesfully");
         }
     }
 }

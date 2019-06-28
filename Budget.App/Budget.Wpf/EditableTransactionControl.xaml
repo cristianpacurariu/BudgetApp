@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Budget.Wpf.EditableTransactionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Budget.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Name="dpTransaction" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+        <TextBlock Name="tbAccount" Grid.Column="1" Margin="5" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+        <TextBlock Name="tbCurrency" Grid.Column="2" Margin="5" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+        <TextBlock Name="tbAmmount" Grid.Column="3" Margin="5" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+        <TextBlock Name="tbCategory" Grid.Column="4" Margin="5" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+        <TextBlock Name="tbDescription" Grid.Column="5" Margin="5" FontFamily="Century Gothic" FontSize="14"></TextBlock>
+    </Grid>
+</UserControl>

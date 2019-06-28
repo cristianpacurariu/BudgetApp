@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Budget.Domain.Filters;
 using Budget.Domain.Repositories;
 using Budget.Infrastructure.Repositories.Specific;
 using Budget.Repositories.Utils;
@@ -25,29 +26,28 @@ namespace Budget.Wpf
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IAccountRepo<AccountDto> _accountRepo = RepoProvider.GetAccountRepo();
+        private readonly IAccountRepo<AccountDto, AccountDtoFilter> _accountRepo = RepoProvider.GetAccountRepo();
         private readonly IOperationTypeRepo<OperationTypeDto> _operationTypeRepo = RepoProvider.GetOperationTypeRepo();
-        private readonly IOperationRepo<OperationDto> _operationRepo = RepoProvider.GetOperationRepo();
+        private readonly IOperationRepo<OperationDto, OperationDtoFilter> _operationRepo = RepoProvider.GetOperationRepo();
         public MainWindow()
         {
             Mapper.Initialize(conf => conf.AddProfile<RepoMapper>());
             InitializeComponent();
-
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeAccounts();
+            InitializeCategories();
         }
 
+
+        #region Accounts
         private void BtnCreateAccount_Click(object sender, RoutedEventArgs e)
         {
             AccountWindow accountWindow = new AccountWindow();
             accountWindow.Show();
             accountWindow.Closing += AccountWindow_Closing;
         }
-        private void BtnCreateCategory_Click(object sender, RoutedEventArgs e)
-        {
-            CategoryWindow categoryWindow = new CategoryWindow();
-            categoryWindow.Show();
-            categoryWindow.Closing += CategoryWindow_Closing;
-        }
-
         private void AccountWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // to avoid RAM memory leaks
@@ -59,23 +59,6 @@ namespace Budget.Wpf
 
             InitializeAccounts();
         }
-        private void CategoryWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            CategoryWindow categoryWindow = new CategoryWindow();
-            if (categoryWindow != null)
-            {
-                categoryWindow.Closing -= CategoryWindow_Closing;
-            }
-
-            InitializeCategories();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitializeAccounts();
-            InitializeCategories();
-        }
-
         private void InitializeAccounts()
         {
             //unsub from events
@@ -102,85 +85,6 @@ namespace Budget.Wpf
 
                 spAccounts.Children.Add(item);
             }
-        }
-        private void InitializeCategories()
-        {
-            //unsub from events
-            foreach (var item in spCategories.Children)
-            {
-                EditableItemControl control = (EditableItemControl)item;
-                control.btnEditItem.Click -= BtnEditCategory_Click;
-                control.btnDeleteItem.Click -= BtnDeleteCategory_Click;
-            }
-
-            spCategories.Children.Clear();
-
-            // get categories from db
-            List<OperationTypeDto> categories = _operationTypeRepo.All();
-
-            foreach (OperationTypeDto category in categories)
-            {
-                EditableItemControl item = new EditableItemControl();
-
-                item.lblName.Content = category.Name;
-                item.Id = category.Id;
-                item.btnEditItem.Click += BtnEditCategory_Click;
-                item.btnDeleteItem.Click += BtnDeleteCategory_Click;
-
-                spCategories.Children.Add(item);
-            }
-        }
-
-        private OperationTypeDto GetClickedCategory(object sender)
-        {
-            //get button parent until we reach the user control (Editable Item Control)
-            DependencyObject ucParent = ((Button)sender).Parent;
-            while (!(ucParent is UserControl))
-            {
-                ucParent = LogicalTreeHelper.GetParent(ucParent);
-            }
-
-            // cast to specific type from UserControl
-            EditableItemControl userControl = (EditableItemControl)ucParent;
-
-            //Get from Db the account with the id of the UserControl
-            OperationTypeDto category = _operationTypeRepo.Get(userControl.Id);
-            return category;
-        }
-        private void BtnEditCategory_Click(object sender, RoutedEventArgs e)
-        {
-            OperationTypeDto category = GetClickedCategory(sender);
-
-            CategoryWindow categoryWindow = new CategoryWindow();
-            categoryWindow.Id = category.Id;
-            categoryWindow.tbCategoryName.Text = category.Name;
-            
-            if (category.IsCredit)
-            {
-                categoryWindow.rbIncome.IsChecked = true;
-            }
-            else
-            {
-                categoryWindow.rbExpense.IsChecked = true;
-            }
-
-            categoryWindow.Show();
-            categoryWindow.Closing += CategoryWindow_Closing;
-        }
-        private void BtnDeleteCategory_Click(object sender, RoutedEventArgs e)
-        {
-            OperationTypeDto category = GetClickedCategory(sender);
-
-            try
-            {
-                _operationTypeRepo.Delete(category.Id);
-            }
-            catch
-            {
-                MessageBox.Show("Unable to delete category. It has been used for other transactions");
-            }
-
-            InitializeCategories();
         }
 
         private AccountDto GetClickedAccount(object sender)
@@ -236,11 +140,124 @@ namespace Budget.Wpf
             InitializeAccounts();
         }
 
+        #endregion
+
+
+        #region Categories
+
+        private void BtnCreateCategory_Click(object sender, RoutedEventArgs e)
+        {
+            CategoryWindow categoryWindow = new CategoryWindow();
+            categoryWindow.Show();
+            categoryWindow.Closing += CategoryWindow_Closing;
+        }
+        private void CategoryWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CategoryWindow categoryWindow = new CategoryWindow();
+            if (categoryWindow != null)
+            {
+                categoryWindow.Closing -= CategoryWindow_Closing;
+            }
+
+            InitializeCategories();
+        }
+        private void InitializeCategories()
+        {
+            //unsub from events
+            foreach (var item in spCategories.Children)
+            {
+                EditableItemControl control = (EditableItemControl)item;
+                control.btnEditItem.Click -= BtnEditCategory_Click;
+                control.btnDeleteItem.Click -= BtnDeleteCategory_Click;
+            }
+
+            spCategories.Children.Clear();
+
+            // get categories from db
+            List<OperationTypeDto> categories = _operationTypeRepo.All();
+
+            foreach (OperationTypeDto category in categories)
+            {
+                EditableItemControl item = new EditableItemControl();
+
+                item.lblName.Content = category.Name;
+                item.Id = category.Id;
+                item.btnEditItem.Click += BtnEditCategory_Click;
+                item.btnDeleteItem.Click += BtnDeleteCategory_Click;
+
+                spCategories.Children.Add(item);
+            }
+        }
+        private OperationTypeDto GetClickedCategory(object sender)
+        {
+            //get button parent until we reach the user control (Editable Item Control)
+            DependencyObject ucParent = ((Button)sender).Parent;
+            while (!(ucParent is UserControl))
+            {
+                ucParent = LogicalTreeHelper.GetParent(ucParent);
+            }
+
+            // cast to specific type from UserControl
+            EditableItemControl userControl = (EditableItemControl)ucParent;
+
+            //Get from Db the account with the id of the UserControl
+            OperationTypeDto category = _operationTypeRepo.Get(userControl.Id);
+            return category;
+        }
+        private void BtnEditCategory_Click(object sender, RoutedEventArgs e)
+        {
+            OperationTypeDto category = GetClickedCategory(sender);
+
+            CategoryWindow categoryWindow = new CategoryWindow();
+            categoryWindow.Id = category.Id;
+            categoryWindow.tbCategoryName.Text = category.Name;
+            
+            if (category.IsCredit)
+            {
+                categoryWindow.rbIncome.IsChecked = true;
+            }
+            else
+            {
+                categoryWindow.rbExpense.IsChecked = true;
+            }
+
+            categoryWindow.Show();
+            categoryWindow.Closing += CategoryWindow_Closing;
+        }
+        private void BtnDeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+            OperationTypeDto category = GetClickedCategory(sender);
+
+            try
+            {
+                _operationTypeRepo.Delete(category.Id);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to delete category. It has been used for other transactions");
+            }
+
+            InitializeCategories();
+        }
+
+        #endregion
+
+
+        #region Spendings
+
         private void BtnNewSpending_Click(object sender, RoutedEventArgs e)
         {
             NewSpendingWindow newSpendingWindow = new NewSpendingWindow();
             newSpendingWindow.Show();
 
         }
+
+        private void BtnViewSpendings_Click(object sender, RoutedEventArgs e)
+        {
+            TransactionListWindow transactions = new TransactionListWindow();
+            transactions.Show();
+        }
+
+        #endregion
     }
 }

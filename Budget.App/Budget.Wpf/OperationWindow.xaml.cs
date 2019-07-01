@@ -18,16 +18,19 @@ using Budget.Domain.Filters;
 
 namespace Budget.Wpf
 {
-    public partial class NewSpendingWindow : Window
+    public partial class OperationWindow : Window
     {
         private readonly IAccountRepo<AccountDto, AccountDtoFilter> _accountRepo = RepoProvider.GetAccountRepo();
         private readonly IOperationTypeRepo<OperationTypeDto> _operationTypeRepo = RepoProvider.GetOperationTypeRepo();
         private readonly IOperationRepo<OperationDto, OperationDtoFilter> _operationRepo = RepoProvider.GetOperationRepo();
-        public NewSpendingWindow()
+        public OperationWindow()
         {
             InitializeComponent();
             InitializeData();
         }
+
+        public int Id { get; set; }
+
         private void InitializeData()
         {
             // Initialize Accounts
@@ -56,29 +59,56 @@ namespace Budget.Wpf
                 cbCategory.Items.Add(comboItem);
             }
         }
-        private void BtnSaveNewOperation_Click(object sender, RoutedEventArgs e)
+        private void BtnSaveOperation_Click(object sender, RoutedEventArgs e)
         {
-            OperationDto newOperationDto = new OperationDto()
+            if (this.Id != 0)
             {
-                IdAccount = ((ComboItem)cbAccount.SelectedItem).Id,
-                IdOperationType = ((ComboItem)cbCategory.SelectedItem).Id,
-                Date = (DateTime)datePicker.SelectedDate,
-                Description = tbDescription.Text,
-            };
+                OperationDto editOperation = new OperationDto()
+                {
+                    Id = this.Id,
+                    IdAccount = ((ComboItem)cbAccount.SelectedItem).Id,
+                    IdOperationType = ((ComboItem)cbCategory.SelectedItem).Id,
+                    Date = (DateTime)datePicker.SelectedDate,
+                    Description = tbDescription.Text,
+                };
 
-            if (decimal.TryParse(tbAmmount.Text, out decimal result))
-            {
-                newOperationDto.Ammount = result;
+                if (decimal.TryParse(tbAmmount.Text, out decimal result))
+                {
+                    editOperation.Ammount = result;
+                }
+                else
+                {
+                    MessageBox.Show("Please insert a valid number for the Ammount");
+                    return;
+                }
+
+                _operationRepo.Update(editOperation);
+                MessageBox.Show("Operation updated succesfully");
             }
             else
             {
-                MessageBox.Show("Please insert a valid number for the Ammount");
-                return;
-            }
+                OperationDto newOperationDto = new OperationDto()
+                {
+                    IdAccount = ((ComboItem)cbAccount.SelectedItem).Id,
+                    IdOperationType = ((ComboItem)cbCategory.SelectedItem).Id,
+                    Date = (DateTime)datePicker.SelectedDate,
+                    Description = tbDescription.Text,
+                };
 
-            _operationRepo.Add(newOperationDto);
+                if (decimal.TryParse(tbAmmount.Text, out decimal result))
+                {
+                    newOperationDto.Ammount = result;
+                }
+                else
+                {
+                    MessageBox.Show("Please insert a valid number for the Ammount");
+                    return;
+                }
+
+                _operationRepo.Add(newOperationDto);
+                MessageBox.Show("Operation added succesfully");
+            }
             this.Close();
-            MessageBox.Show("Operation added succesfully");
         }
     }
 }

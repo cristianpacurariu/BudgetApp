@@ -67,13 +67,12 @@ namespace Budget.Repositories
         }
         public void Update(OperationDto item)
         {
+            Operation operation = Mapper.Map<OperationDto, Operation>(item);
+
             using (SpendingsEntities context = new SpendingsEntities())
             {
-                Operation fromDb = context.Operations.FirstOrDefault(d => d.Id == item.Id);
-
-                Mapper.Map<Operation, OperationDto>(fromDb);
-                context.Operations.Attach(fromDb);
-                context.Entry(fromDb).State = System.Data.Entity.EntityState.Modified;
+                context.Operations.Attach(operation);
+                context.Entry(operation).State = EntityState.Modified;
 
                 context.SaveChanges();
             }

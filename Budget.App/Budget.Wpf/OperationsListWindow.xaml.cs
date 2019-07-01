@@ -51,20 +51,21 @@ namespace Budget.Wpf
         #endregion
 
         #region Methods
-        private void InitializeCategories(List<OperationTypeDto> operationTypeDtos)
-        {
-            cbCategory.Items.Clear();
-            cbCategory.Items.Add(new ComboItem() { Name = "All Categories", Id = 0 });
 
-            foreach (OperationTypeDto category in operationTypeDtos)
+        private void InitializeCurrencies(List<CurrencyDto> currencyDtos)
+        {
+            cbCurrency.Items.Clear();
+            cbCurrency.Items.Add(new ComboItem() { Name = "All Currencies", Id = 0 });
+
+            foreach (CurrencyDto currency in currencyDtos)
             {
                 ComboItem comboItem = new ComboItem()
                 {
-                    Name = category.Name,
-                    Id = category.Id
+                    Name = currency.Name,
+                    Id = currency.Id
                 };
 
-                cbCategory.Items.Add(comboItem);
+                cbCurrency.Items.Add(comboItem);
             }
         }
         private void InitializeAccounts(List<AccountDto> accountDtos)
@@ -83,19 +84,56 @@ namespace Budget.Wpf
                 cbAccount.Items.Add(comboItem);
             }
         }
+        private void InitializeCategories(List<OperationTypeDto> operationTypeDtos)
+        {
+            cbCategory.Items.Clear();
+            cbCategory.Items.Add(new ComboItem() { Name = "All Categories", Id = 0 });
+
+            foreach (OperationTypeDto category in operationTypeDtos)
+            {
+                ComboItem comboItem = new ComboItem()
+                {
+                    Name = category.Name,
+                    Id = category.Id
+                };
+
+                cbCategory.Items.Add(comboItem);
+            }
+        }
+        private void InitializeCombos()
+        {
+            List<CurrencyDto> currencyDtos = _currencyRepo.All();
+            InitializeCurrencies(currencyDtos);
+
+            List<AccountDto> accountDtos = _accountRepo.All();
+            InitializeAccounts(accountDtos);
+
+            List<OperationTypeDto> operationTypeDtos = _operationTypeRepo.All();
+            InitializeCategories(operationTypeDtos);
+        }
         private void InitializeTransactions()
         {
+            //unsub from events
+            foreach (var item in spTransactions.Children)
+            {
+                EditableTransactionControl control = (EditableTransactionControl)item;
+                control.btnEditOperation.Click -= BtnEditOperation_Click;
+                control.btnDeleteOperation.Click -= BtnDeleteOperation_Click;
+            }
+
+            spTransactions.Children.Clear();
+
             // Get present filter
             OperationDtoFilter filter = GetFilter();
 
             List<OperationDto> operationDtos = _operationRepo.Filter(filter);
             operationDtos = operationDtos.OrderByDescending(d => d.Date).ToList();
 
-            spTransactions.Children.Clear();
-
             foreach (OperationDto operationDto in operationDtos)
             {
                 EditableTransactionControl transactionControl = new EditableTransactionControl();
+
+                transactionControl.IdOperation = operationDto.Id;
 
                 transactionControl.dpTransaction.Text = operationDto.Date.ToString("dd/MMM/yyyy");
                 transactionControl.tbCurrency.Text = operationDto.Account.Currency.Name;
@@ -104,8 +142,50 @@ namespace Budget.Wpf
                 transactionControl.tbCategory.Text = operationDto.OperationType.Name;
                 transactionControl.tbDescription.Text = operationDto.Description;
 
+                transactionControl.btnEditOperation.Click += BtnEditOperation_Click;
+                transactionControl.btnDeleteOperation.Click += BtnDeleteOperation_Click;
+
                 spTransactions.Children.Add(transactionControl);
             }
+        }
+        private void TransactionListWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeCombos();
+            cbCurrency.SelectedIndex = 0;
+            cbAccount.SelectedIndex = 0;
+            cbCategory.SelectedIndex = 0;
+
+            tbFrom.Text = "0";
+
+            dpFrom.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
+            dpTo.SelectedDate = DateTime.Today;
+
+        }
+
+        private void BtnNewSpending_Click(object sender, RoutedEventArgs e)
+        {
+            OperationWindow newSpendingWindow = new OperationWindow();
+            newSpendingWindow.Show();
+
+            newSpendingWindow.Closing += NewSpendingWindow_Closing;
+        }
+        private void NewSpendingWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            InitializeTransactions();
+        }
+
+        private void FilterAccountsComboBox()
+        {
+            AccountDtoFilter filter = new AccountDtoFilter()
+            {
+                IdCurrency = ((ComboItem)cbCurrency.SelectedItem).Id
+            };
+            if (filter.IdCurrency == 0)
+            {
+                filter.IdCurrency = null;
+            }
+            List<AccountDto> accountDtos = _accountRepo.Filter(filter);
+            InitializeAccounts(accountDtos);
         }
         private OperationDtoFilter GetFilter()
         {
@@ -164,71 +244,12 @@ namespace Budget.Wpf
             }
 
             // Date filter
-
-            filter.DateFrom = dpFrom.DisplayDate.Date;
-            filter.DateTo = dpTo.DisplayDate.Date;
-
+            filter.DateFrom = dpFrom.SelectedDate;
+            filter.DateTo = dpTo.SelectedDate;
 
             return filter;
         }
-        private void FilterAccountsComboBox()
-        {
-            AccountDtoFilter filter = new AccountDtoFilter()
-            {
-                IdCurrency = ((ComboItem)cbCurrency.SelectedItem).Id
-            };
-            if (filter.IdCurrency == 0)
-            {
-                filter.IdCurrency = null;
-            }
-            List<AccountDto> accountDtos = _accountRepo.Filter(filter);
-            InitializeAccounts(accountDtos);
-        }
-        private void InitializeCombos()
-        {
-            List<CurrencyDto> currencyDtos = _currencyRepo.All();
-            InitializeCurrencies(currencyDtos);
 
-            List<AccountDto> accountDtos = _accountRepo.All();
-            InitializeAccounts(accountDtos);
-
-            List<OperationTypeDto> operationTypeDtos = _operationTypeRepo.All();
-            InitializeCategories(operationTypeDtos);
-        }
-        private void InitializeCurrencies(List<CurrencyDto> currencyDtos)
-        {
-            cbCurrency.Items.Clear();
-            cbCurrency.Items.Add(new ComboItem() { Name = "All Currencies", Id = 0 });
-
-            foreach (CurrencyDto currency in currencyDtos)
-            {
-                ComboItem comboItem = new ComboItem()
-                {
-                    Name = currency.Name,
-                    Id = currency.Id
-                };
-
-                cbCurrency.Items.Add(comboItem);
-            }
-        }
-
-        #region Events
-
-        private void TransactionListWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitializeCombos();
-            InitializeTransactions();
-
-            cbCurrency.SelectedIndex = 0;
-            cbAccount.SelectedIndex = 0;
-            cbCategory.SelectedIndex = 0;
-
-            tbFrom.Text = "0";
-
-            dpFrom.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
-            dpTo.SelectedDate = DateTime.Today;
-
-        }
         private void CbCurrency_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FilterAccountsComboBox();
@@ -243,6 +264,7 @@ namespace Budget.Wpf
         {
             InitializeTransactions();
         }
+
         private void TbFrom_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (int.TryParse(tbFrom.Text, out int result))
@@ -281,6 +303,7 @@ namespace Budget.Wpf
             }
             InitializeTransactions();
         }
+
         private void DpFrom_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             InitializeTransactions();
@@ -290,7 +313,97 @@ namespace Budget.Wpf
             InitializeTransactions();
         }
 
-        #endregion
+        private OperationDto GetClickedOperation(object sender)
+        {
+            DependencyObject parent = ((Button)sender).Parent;
+
+            while (!(parent is EditableTransactionControl))
+            {
+                parent = LogicalTreeHelper.GetParent(parent);
+            }
+
+            int opId = ((EditableTransactionControl)parent).IdOperation;
+
+            OperationDto operationDto = _operationRepo.Get(opId);
+            return operationDto;
+
+            ////get button parent until we reach the user control (Editable Transaction Control)
+            //DependencyObject ucParent = ((Button)sender).Parent;
+            //while (!(ucParent is UserControl))
+            //{
+            //    ucParent = LogicalTreeHelper.GetParent(ucParent);
+            //}
+
+            //// cast to specific type from UserControl
+            //EditableTransactionControl userControl = (EditableTransactionControl)ucParent;
+
+            ////Get from Db the account with the id of the UserControl
+            //OperationDto operationDto = _operationRepo.Get(userControl.IdOperation);
+            //return operationDto;
+        }
+
+        private void BtnEditOperation_Click(object sender, RoutedEventArgs e)
+        {
+            OperationDto clickedOperation = GetClickedOperation(sender);
+
+            OperationWindow operationWindow = new OperationWindow();
+            operationWindow.Id = clickedOperation.Id;
+
+            // Populate text boxes and date
+            operationWindow.datePicker.SelectedDate = clickedOperation.Date;
+            operationWindow.tbAmmount.Text = clickedOperation.Ammount.ToString();
+            operationWindow.tbDescription.Text = clickedOperation.Description;
+
+            // Populate accounts combo box
+            foreach (ComboItem item in operationWindow.cbAccount.Items)
+            {
+                if (item.Id == clickedOperation.IdAccount)
+                {
+                    operationWindow.cbAccount.SelectedItem = item;
+                }
+            }
+
+            // Populate categories combo box
+            foreach (ComboItem item in operationWindow.cbCategory.Items)
+            {
+                if (item.Id == clickedOperation.IdOperationType)
+                {
+                    operationWindow.cbCategory.SelectedItem = item;
+                }
+            }
+
+            operationWindow.Show();
+
+            //OperationDto editedOperation = new OperationDto()
+            //{
+            //    Id = clickedOperation.Id,
+            //    //Date = ,
+            //    Ammount = (decimal.Parse(operationWindow.tbAmmount.Text)),
+            //    IdOperationType = ((ComboItem)operationWindow.cbCategory.SelectedItem).Id,
+            //    Description = operationWindow.tbDescription.Text
+            //};
+            //_operationRepo.Update(editedOperation);
+
+            operationWindow.Closing += OperationWindow_Closing;
+
+        }
+        private void OperationWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // to avoid RAM memory leaks
+            OperationWindow operationWindow = sender as OperationWindow;
+            if (operationWindow != null)
+            {
+                operationWindow.Closing -= OperationWindow_Closing;
+            }
+            InitializeTransactions();
+        }
+
+        private void BtnDeleteOperation_Click(object sender, RoutedEventArgs e)
+        {
+            OperationDto clickedOperation = GetClickedOperation(sender);
+            _operationRepo.Delete(clickedOperation.Id);
+            InitializeTransactions();
+        }
 
         #endregion
 

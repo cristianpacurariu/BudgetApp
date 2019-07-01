@@ -29,6 +29,7 @@ namespace Budget.Wpf
         private readonly IAccountRepo<AccountDto, AccountDtoFilter> _accountRepo = RepoProvider.GetAccountRepo();
         private readonly IOperationTypeRepo<OperationTypeDto> _operationTypeRepo = RepoProvider.GetOperationTypeRepo();
         private readonly IOperationRepo<OperationDto, OperationDtoFilter> _operationRepo = RepoProvider.GetOperationRepo();
+        private readonly ICurrencyRepo<CurrencyDto> _currencyRepo = RepoProvider.GetCurrencyRepo();
         public MainWindow()
         {
             Mapper.Initialize(conf => conf.AddProfile<RepoMapper>());
@@ -38,6 +39,97 @@ namespace Budget.Wpf
         {
             InitializeAccounts();
             InitializeCategories();
+            InitializeCurrencies();
+            InitializeAnalitics();
+        }
+
+        private void InitializeAnalitics()
+        {
+            List<OperationDto> operations = _operationRepo.All();
+            List<AccountDto> accounts = new List<AccountDto>();
+            List<OperationTypeDto> categories = new List<OperationTypeDto>();
+
+            foreach (OperationDto operationDto in operations)
+            {
+                if (!accounts.Contains(operationDto.Account))
+                {
+                    accounts.Add(operationDto.Account);
+                }
+                if (!categories.Contains(operationDto.OperationType))
+                {
+                    categories.Add(operationDto.OperationType);
+                }
+            }
+            for (int i = 1; i <= 12 ; i++)
+            {
+                MonthlyControl monthlyControl = new MonthlyControl();
+
+                monthlyControl.tbMonth.Text = $"Month {i}";
+
+                foreach (AccountDto account in accounts)
+                {
+                    OverviewItemControl overviewItem = new OverviewItemControl();
+                    overviewItem.tbLabel.Text = $"{account.Name} {account.Currency.Name}";
+
+                    overviewItem.tbSum.Text = operations.Where(d => d.Account == account)
+                                                        .Sum(d => d.Ammount)
+                                                        .ToString();
+
+                    monthlyControl.spAccView.Children.Add(overviewItem);
+                }
+
+                foreach (OperationTypeDto category in categories)
+                {
+                    OverviewItemControl overviewItem = new OverviewItemControl();
+                    overviewItem.tbLabel.Text = $"{category.Name}";
+
+                    overviewItem.tbSum.Text = operations.Where(d => d.OperationType == category)
+                                                        .Sum(d => d.Ammount)
+                                                        .ToString();
+
+                    monthlyControl.spCatView.Children.Add(overviewItem);
+                }
+
+                spDashboard.Children.Add(monthlyControl);
+            }
+            
+
+        }
+
+        private void InitializeCurrencies()
+        {
+            spCurrencyFilter.Children.Clear();
+            List<CurrencyDto> currencyDtos = _currencyRepo.All();
+            foreach (CurrencyDto currency in currencyDtos)
+            {
+                EditableCurrencyControl control = new EditableCurrencyControl();
+                control.Id = currency.Id;
+                control.btnCurrency.Content = $"{currency.Name}";
+                spCurrencyFilter.Children.Add(control);
+
+                control.btnCurrency.Click += BtnCurrency_Click;
+            }
+        }
+        private void BtnCurrency_Click(object sender, RoutedEventArgs e)
+        {
+            //CurrencyDto clickedCurrency = GetClickedCurrency(sender);
+
+            string message = ((Button)sender).Content.ToString();
+            MessageBox.Show($"Currency {message} pressed.");
+        }
+        private CurrencyDto GetClickedCurrency(object sender)
+        {
+            DependencyObject parent = ((Button)sender).Parent;
+
+            while (!(parent is EditableCurrencyControl))
+            {
+                parent = LogicalTreeHelper.GetParent(parent);
+            }
+
+            int currencyId = ((EditableCurrencyControl)parent).Id;
+
+            CurrencyDto currencyDto = _currencyRepo.Get(currencyId);
+            return currencyDto;
         }
 
 
@@ -142,7 +234,6 @@ namespace Budget.Wpf
 
         #endregion
 
-
         #region Categories
 
         private void BtnCreateCategory_Click(object sender, RoutedEventArgs e)
@@ -211,7 +302,7 @@ namespace Budget.Wpf
             CategoryWindow categoryWindow = new CategoryWindow();
             categoryWindow.Id = category.Id;
             categoryWindow.tbCategoryName.Text = category.Name;
-            
+
             if (category.IsCredit)
             {
                 categoryWindow.rbIncome.IsChecked = true;
@@ -242,15 +333,7 @@ namespace Budget.Wpf
 
         #endregion
 
-
         #region Spendings
-
-        private void BtnNewSpending_Click(object sender, RoutedEventArgs e)
-        {
-            NewSpendingWindow newSpendingWindow = new NewSpendingWindow();
-            newSpendingWindow.Show();
-
-        }
 
         private void BtnViewSpendings_Click(object sender, RoutedEventArgs e)
         {
@@ -259,5 +342,8 @@ namespace Budget.Wpf
         }
 
         #endregion
+
+
+
     }
 }

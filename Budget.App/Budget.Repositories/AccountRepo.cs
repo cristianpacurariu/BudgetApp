@@ -99,6 +99,7 @@ namespace Budget.Repositories
                 //find in database and attach to the account object
                 //account.Id select top 1 from Accounts where Id == account.Id
                 context.Accounts.Attach(account);
+
                 //mark entity as modified
                 context.Entry(account).State = EntityState.Modified;
 

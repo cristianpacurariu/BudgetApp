@@ -15,12 +15,11 @@ using System.Windows.Shapes;
 
 namespace Budget.Wpf
 {
-    public partial class EditableItemControl : UserControl
+    public partial class MonthlyControl : UserControl
     {
-        public EditableItemControl()
+        public MonthlyControl()
         {
             InitializeComponent();
         }
-        public int Id { get; set; }
     }
 }

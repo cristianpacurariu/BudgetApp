@@ -71,18 +71,31 @@
     <Compile Include="CategoryWindow.xaml.cs">
       <DependentUpon>CategoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditableCurrencyControl.xaml.cs">
+      <DependentUpon>EditableCurrencyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditableTransactionControl.xaml.cs">
       <DependentUpon>EditableTransactionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NewSpendingWindow.xaml.cs">
-      <DependentUpon>NewSpendingWindow.xaml</DependentUpon>
+    <Compile Include="OperationWindow.xaml.cs">
+      <DependentUpon>OperationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TransactionListWindow.xaml.cs">
-      <DependentUpon>TransactionListWindow.xaml</DependentUpon>
+    <Compile Include="OperationsListWindow.xaml.cs">
+      <DependentUpon>OperationsListWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MonthlyControl.xaml.cs">
+      <DependentUpon>MonthlyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OverviewItemControl.xaml.cs">
+      <DependentUpon>OverviewItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ComboItem.cs" />
     <Compile Include="Utils\RepoProvider.cs" />
     <Page Include="CategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditableCurrencyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -113,11 +126,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NewSpendingWindow.xaml">
+    <Page Include="OperationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TransactionListWindow.xaml">
+    <Page Include="OperationsListWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MonthlyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OverviewItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

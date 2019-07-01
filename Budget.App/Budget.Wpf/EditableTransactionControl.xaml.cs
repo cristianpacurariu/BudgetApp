@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Budget.Domain.Repositories;
+using Budget.Infrastructure.Repositories.Specific;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +17,13 @@ using System.Windows.Shapes;
 
 namespace Budget.Wpf
 {
-    /// <summary>
-    /// Interaction logic for EditableTransactionControl.xaml
-    /// </summary>
     public partial class EditableTransactionControl : UserControl
     {
         public EditableTransactionControl()
         {
             InitializeComponent();
         }
+
+        public int IdOperation { get; set; }
     }
 }

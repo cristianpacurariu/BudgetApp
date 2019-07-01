@@ -15,5 +15,8 @@ namespace Budget.Domain.Filters
         public decimal? AmmountFrom { get; set; }
         public decimal? AmmountTo { get; set; }
 
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
     }
 }

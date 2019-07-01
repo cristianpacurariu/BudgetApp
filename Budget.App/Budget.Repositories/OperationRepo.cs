@@ -109,6 +109,16 @@ namespace Budget.Repositories
                     query = query.Where(d => d.Ammount <= filter.AmmountTo);
                 }
 
+                if (filter.DateFrom != null)
+                {
+                    query = query.Where(d => d.Date >= filter.DateFrom);
+                }
+
+                if (filter.DateTo != null)
+                {
+                    query = query.Where(d => d.Date <= filter.DateTo);
+                }
+
                 List<Operation> fromDb = query.ToList();
 
                 return Mapper.Map<List<Operation>, List<OperationDto>>(fromDb);

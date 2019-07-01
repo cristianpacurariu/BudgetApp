@@ -18,9 +18,9 @@
 
         <Label Content="Name" HorizontalAlignment="Left" Margin="5,15,0,0" VerticalAlignment="Top" Width="90" FontFamily="Century Gothic" FontSize="14"/>
         <Label Content="Currency" HorizontalAlignment="Left" Margin="5,50,0,0" VerticalAlignment="Top" Width="90" FontFamily="Century Gothic" FontSize="14"/>
-        <TextBox Name="tbName" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10,18,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" 
+        <TextBox Name="tbName" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="10,18,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" 
                  Width="120" FontSize="14" MaxLength="15"/>
-        <ComboBox Name="cbCurrency" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10,53,0,0" Text="" VerticalAlignment="Top" 
+        <ComboBox Name="cbCurrency" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="10,53,0,0" Text="" VerticalAlignment="Top" 
                  Width="120" FontSize="14" />
         <Button Name="btnSaveAccount" Content="Save Account" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="126" 
                 FontSize="16" FontFamily="Century Gothic" Click="BtnSaveAccount_Click"/>

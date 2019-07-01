@@ -51,38 +51,10 @@ namespace Budget.Wpf
         #endregion
 
         #region Methods
-
-        private void InitializeCombos()
-        {
-            List<CurrencyDto> currencyDtos = _currencyRepo.All();
-            InitializeCurrencies(currencyDtos);
-
-            List<AccountDto> accountDtos = _accountRepo.All();
-            InitializeAccounts(accountDtos);
-
-            List<OperationTypeDto> operationTypeDtos = _operationTypeRepo.All();
-            InitializeCategories(operationTypeDtos);
-        }
-        private void InitializeCurrencies(List<CurrencyDto> currencyDtos)
-        {
-            cbCurrency.Items.Clear();
-            cbCurrency.Items.Add(new ComboItem() { Name = string.Empty, Id = 0 });
-
-            foreach (CurrencyDto currency in currencyDtos)
-            {
-                ComboItem comboItem = new ComboItem()
-                {
-                    Name = currency.Name,
-                    Id = currency.Id
-                };
-
-                cbCurrency.Items.Add(comboItem);
-            }
-        }
         private void InitializeCategories(List<OperationTypeDto> operationTypeDtos)
         {
             cbCategory.Items.Clear();
-            cbCategory.Items.Add(new ComboItem() { Name = string.Empty, Id = 0 });
+            cbCategory.Items.Add(new ComboItem() { Name = "All Categories", Id = 0 });
 
             foreach (OperationTypeDto category in operationTypeDtos)
             {
@@ -98,7 +70,7 @@ namespace Budget.Wpf
         private void InitializeAccounts(List<AccountDto> accountDtos)
         {
             cbAccount.Items.Clear();
-            cbAccount.Items.Add(new ComboItem() { Name = string.Empty, Id = 0 });
+            cbAccount.Items.Add(new ComboItem() { Name = "All Accounts", Id = 0 });
 
             foreach (AccountDto account in accountDtos)
             {
@@ -139,31 +111,7 @@ namespace Budget.Wpf
         {
             OperationDtoFilter filter = new OperationDtoFilter();
 
-            if ((ComboItem)cbAccount.SelectedItem != null)
-            {
-                int? idSelectedAccount = ((ComboItem)cbAccount.SelectedItem).Id;
-                if (idSelectedAccount == 0)
-                {
-                    filter.IdAccount = null;
-                }
-                else
-                {
-                    filter.IdAccount = idSelectedAccount;
-                }
-            }
-            if ((ComboItem)cbCategory.SelectedItem != null)
-            {
-                int? idSelectedCategory = ((ComboItem)cbCategory.SelectedItem).Id;
-                if (idSelectedCategory == 0)
-                {
-                    filter.IdCategory = null;
-                }
-                else
-                {
-                    filter.IdCategory = idSelectedCategory;
-                }
-            }
-
+            // Currency filter
             if ((ComboItem)cbCurrency.SelectedItem != null)
             {
                 int? idSelectedCurrency = ((ComboItem)cbCurrency.SelectedItem).Id;
@@ -177,6 +125,35 @@ namespace Budget.Wpf
                 }
             }
 
+            // Account filter
+            if ((ComboItem)cbAccount.SelectedItem != null)
+            {
+                int? idSelectedAccount = ((ComboItem)cbAccount.SelectedItem).Id;
+                if (idSelectedAccount == 0)
+                {
+                    filter.IdAccount = null;
+                }
+                else
+                {
+                    filter.IdAccount = idSelectedAccount;
+                }
+            }
+
+            // Category filter
+            if ((ComboItem)cbCategory.SelectedItem != null)
+            {
+                int? idSelectedCategory = ((ComboItem)cbCategory.SelectedItem).Id;
+                if (idSelectedCategory == 0)
+                {
+                    filter.IdCategory = null;
+                }
+                else
+                {
+                    filter.IdCategory = idSelectedCategory;
+                }
+            }
+
+            // Ammount filter
             if (decimal.TryParse(tbFrom.Text, out decimal from))
             {
                 filter.AmmountFrom = from;
@@ -185,6 +162,12 @@ namespace Budget.Wpf
             {
                 filter.AmmountTo = to;
             }
+
+            // Date filter
+
+            filter.DateFrom = dpFrom.DisplayDate.Date;
+            filter.DateTo = dpTo.DisplayDate.Date;
+
 
             return filter;
         }
@@ -201,6 +184,33 @@ namespace Budget.Wpf
             List<AccountDto> accountDtos = _accountRepo.Filter(filter);
             InitializeAccounts(accountDtos);
         }
+        private void InitializeCombos()
+        {
+            List<CurrencyDto> currencyDtos = _currencyRepo.All();
+            InitializeCurrencies(currencyDtos);
+
+            List<AccountDto> accountDtos = _accountRepo.All();
+            InitializeAccounts(accountDtos);
+
+            List<OperationTypeDto> operationTypeDtos = _operationTypeRepo.All();
+            InitializeCategories(operationTypeDtos);
+        }
+        private void InitializeCurrencies(List<CurrencyDto> currencyDtos)
+        {
+            cbCurrency.Items.Clear();
+            cbCurrency.Items.Add(new ComboItem() { Name = "All Currencies", Id = 0 });
+
+            foreach (CurrencyDto currency in currencyDtos)
+            {
+                ComboItem comboItem = new ComboItem()
+                {
+                    Name = currency.Name,
+                    Id = currency.Id
+                };
+
+                cbCurrency.Items.Add(comboItem);
+            }
+        }
 
         #region Events
 
@@ -208,11 +218,22 @@ namespace Budget.Wpf
         {
             InitializeCombos();
             InitializeTransactions();
+
+            cbCurrency.SelectedIndex = 0;
+            cbAccount.SelectedIndex = 0;
+            cbCategory.SelectedIndex = 0;
+
+            tbFrom.Text = "0";
+
+            dpFrom.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
+            dpTo.SelectedDate = DateTime.Today;
+
         }
         private void CbCurrency_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FilterAccountsComboBox();
             InitializeTransactions();
+            cbAccount.SelectedIndex = 0;
         }
         private void CbAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -224,9 +245,47 @@ namespace Budget.Wpf
         }
         private void TbFrom_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (int.TryParse(tbFrom.Text, out int result))
+            {
+                tbFrom.Text = result.ToString();
+            }
+            else
+            {
+                MessageBox.Show("The ammount cannot contain text. Please insert a valid integer number from 0 - 10000");
+                if (tbFrom.Text.Length > 0)
+                {
+                    //erase last digit
+                    tbFrom.Text = tbFrom.Text.Substring(0, tbFrom.Text.Length - 1);
+                    //set cursor at the end of text
+                    tbFrom.SelectionStart = tbFrom.Text.Length;
+                }
+            }
             InitializeTransactions();
         }
         private void TbTo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(tbTo.Text, out int result))
+            {
+                tbTo.Text = result.ToString();
+            }
+            else
+            {
+                MessageBox.Show("The ammount cannot contain text. Please insert a valid integer number from 0 - 10000");
+                if (tbTo.Text.Length > 0)
+                {
+                    //erase last digit
+                    tbTo.Text = tbTo.Text.Substring(0, tbTo.Text.Length - 1);
+                    //set cursor at the end of text
+                    tbTo.SelectionStart = tbTo.Text.Length;
+                }
+            }
+            InitializeTransactions();
+        }
+        private void DpFrom_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            InitializeTransactions();
+        }
+        private void DpTo_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             InitializeTransactions();
         }
@@ -234,5 +293,6 @@ namespace Budget.Wpf
         #endregion
 
         #endregion
+
     }
 }

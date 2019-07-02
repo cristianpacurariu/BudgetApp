@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 
 namespace Budget.Wpf
 {
-    public partial class TransactionListWindow : Window
+    public partial class OperationsListWindow : Window
     {
         #region Fields
 
@@ -31,7 +31,7 @@ namespace Budget.Wpf
 
         #region Constructors
 
-        public TransactionListWindow()
+        public OperationsListWindow()
         {
             InitializeComponent();
 
@@ -159,7 +159,6 @@ namespace Budget.Wpf
 
             dpFrom.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
             dpTo.SelectedDate = DateTime.Today;
-
         }
 
         private void BtnNewSpending_Click(object sender, RoutedEventArgs e)
